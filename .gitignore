@@ -1,0 +1,75 @@
+# Python 编译缓存
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C 扩展
+*.so
+
+# 虚拟环境
+venv/
+env/
+.venv/
+ENV/
+
+# 包分发和构建
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+# 一般会生成一些日志和临时文件
+*.manifest
+*.spec
+
+# 单元测试 / 覆盖率报告
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PDM
+__pypackages__/
+
+# VSCode / PyCharm 等 IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Mac / Linux / Windows 系统文件
+.DS_Store
+Thumbs.db
+
+# Other Local
+output
+Log
+*.bag
