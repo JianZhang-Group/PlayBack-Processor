@@ -20,8 +20,10 @@ class PlaybackThread(QThread):
 
     def run(self):
         pipeline = Pipeline(self.bag_path)
+        print(f"正在回放: {self.bag_path}")
         playback = pipeline.get_playback()
         pipeline.start()
+        print("回放已开始")
         idx = 0
         video_writer = None
 
@@ -81,6 +83,7 @@ class PlaybackThread(QThread):
                             f'output/{base_name}/{base_name}_playback.mp4',
                             fourcc, 30, (show_img.shape[1], show_img.shape[0])
                         )
+                        print(f"视频保存路径: output/{base_name}/{base_name}_playback.mp4")
                     if video_writer:
                         video_writer.write(show_img)
                 self.frame_signal.emit(show_img)
