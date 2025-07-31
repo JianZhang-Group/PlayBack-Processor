@@ -64,12 +64,12 @@ class PlaybackThread(QThread):
             if depth_image is not None:
                 images.append(depth_image)
                 if self.save_images and depth_dir:
-                    cv2.imwrite(os.path.join(depth_dir, f'depth_{idx}.png'), depth_image)
+                    cv2.imwrite(os.path.join(depth_dir, f'{base_name}_depth_{idx}.png'), depth_image)
 
             if color_image is not None:
                 images.append(color_image)
                 if self.save_images and color_dir:
-                    cv2.imwrite(os.path.join(color_dir, f'color_{idx}.png'), color_image)
+                    cv2.imwrite(os.path.join(color_dir, f'{base_name}_color_{idx}.png'), color_image)
 
             if images:
                 show_img = np.hstack([cv2.resize(img, (640, 480)) for img in images])
@@ -78,7 +78,7 @@ class PlaybackThread(QThread):
                         os.makedirs("output", exist_ok=True)
                         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
                         video_writer = cv2.VideoWriter(
-                            f'output/{base_name}_playback.mp4',
+                            f'output/{base_name}/{base_name}_playback.mp4',
                             fourcc, 30, (show_img.shape[1], show_img.shape[0])
                         )
                     if video_writer:
