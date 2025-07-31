@@ -1,7 +1,8 @@
 from PyQt5.QtWidgets import QMainWindow, QTabWidget, QApplication
 from PyQt5.QtGui import QFont, QIcon
 from gui.playback_tab import PlaybackTab
-from gui.export_video import ExportVideoTab
+from gui.export_video_tab import ExportVideoTab
+from gui.command_output_tab import CommandOutputTab
 
 
 
@@ -20,7 +21,9 @@ class MainWindow(QMainWindow):
         self.tabs.setStyleSheet("QTabBar::tab { height: 40px; width: 160px; }")
         self.playback_tab = PlaybackTab()
         self.export_tab = ExportVideoTab()
+        self.command_output_tab = CommandOutputTab()
         self.tabs.addTab(self.playback_tab, "回放")
         self.tabs.addTab(self.export_tab, "图片转视频")
+        self.tabs.addTab(self.command_output_tab, "日志")
 
         self.setCentralWidget(self.tabs)
