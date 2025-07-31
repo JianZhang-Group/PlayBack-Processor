@@ -140,6 +140,7 @@ class PlaybackTab(QWidget):
         if self.save_checkbox.isChecked() and not self.save_dir:
             QMessageBox.warning(self, "错误", "请先选择保存文件夹")
             return
+        print(f"开始回放：{self.bag_path}, 保存图片: {self.save_checkbox.isChecked()}, 保存视频: {self.save_video_checkbox.isChecked()}, 帧率: {self.fps_input.value()}")
         self.thread = PlaybackThread(
             self.bag_path,
             save_images=self.save_checkbox.isChecked(),

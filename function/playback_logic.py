@@ -9,7 +9,7 @@ class PlaybackThread(QThread):
     frame_signal = pyqtSignal(object)
     finished_signal = pyqtSignal()
 
-    def __init__(self, bag_path, save_images=False, save_dir=None, save_video=False, fps=30):
+    def __init__(self, bag_path, save_images=False, save_dir=None, save_video=False, fps=10):
         super().__init__()
         self.bag_path = bag_path
         self.running = True
@@ -81,10 +81,10 @@ class PlaybackThread(QThread):
                         os.makedirs(root_save_dir, exist_ok=True)  # 确保 bag 文件夹存在
                         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
                         video_writer = cv2.VideoWriter(
-                            f'{self.save_dir}/{base_name}/{base_name}_playback.mp4',
-                            fourcc, {self.fps}, (show_img.shape[1], show_img.shape[0])
+                            f'{root_save_dir}/{base_name}_playback.mp4',
+                            fourcc, self.fps, (show_img.shape[1], show_img.shape[0])
                         )
-                        print(f"视频保存路径: output/{base_name}/{base_name}_playback.mp4;帧率: {self.fps}")
+                        print(f"视频保存路径: {root_save_dir}/{base_name}_playback.mp4;帧率： {self.fps}")
                     if video_writer:
                         video_writer.write(show_img)
                 self.frame_signal.emit(show_img)
