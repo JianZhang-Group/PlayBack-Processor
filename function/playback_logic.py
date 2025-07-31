@@ -77,9 +77,13 @@ class PlaybackThread(QThread):
                     if idx == 0:
                         os.makedirs(root_save_dir, exist_ok=True)  # 确保 bag 文件夹存在
                         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-                        video_writer = cv2.VideoWriter(os.path.join(root_save_dir, f'{base_name}_playback.mp4'),fourcc, 30, (show_img.shape[1], show_img.shape[0]))
-                if video_writer:
-                    video_writer.write(show_img)
+                        video_writer = cv2.VideoWriter(
+                            f'output/{base_name}/{base_name}_playback.mp4',
+                            fourcc, 30, (show_img.shape[1], show_img.shape[0])
+                        )
+                    if video_writer:
+                        video_writer.write(show_img)
+                self.frame_signal.emit(show_img)
 
             idx += 1
 
