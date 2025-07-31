@@ -24,11 +24,20 @@ class PlaybackThread(QThread):
         pipeline.start()
         idx = 0
         video_writer = None
+
+        # 获取 bag 文件名（去掉扩展名）
+        base_name = os.path.splitext(os.path.basename(self.bag_path))[0]
+
+        # 保存路径： save_dir / bag_name
+        root_save_dir = None
+        color_dir, depth_dir = None, None
         if self.save_images and self.save_dir:
-            depth_dir = os.path.join(self.save_dir, 'depth_img')
-            color_dir = os.path.join(self.save_dir, 'color_img')
+            root_save_dir = os.path.join(self.save_dir, base_name)
+            depth_dir = os.path.join(root_save_dir, 'depth')
+            color_dir = os.path.join(root_save_dir, 'color')
             os.makedirs(depth_dir, exist_ok=True)
             os.makedirs(color_dir, exist_ok=True)
+
         while self.running:
             if self.paused:
                 self.msleep(100)
@@ -39,6 +48,7 @@ class PlaybackThread(QThread):
             depth_frame = frames.get_depth_frame()
             if depth_frame is None:
                 continue
+
             width = depth_frame.get_width()
             height = depth_frame.get_height()
             scale = depth_frame.get_depth_scale()
@@ -47,26 +57,36 @@ class PlaybackThread(QThread):
             depth_data = depth_data.astype(float) * scale
             depth_image = cv2.normalize(depth_data, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
             depth_image = cv2.applyColorMap(depth_image, cv2.COLORMAP_JET)
+
             color_image = frame_to_bgr_image(frames.get_color_frame())
+
             images = []
             if depth_image is not None:
                 images.append(depth_image)
-                if self.save_images and self.save_dir:
-                    cv2.imwrite(os.path.join(self.save_dir, 'depth_img', f'depth_{idx}.png'), depth_image)
+                if self.save_images and depth_dir:
+                    cv2.imwrite(os.path.join(depth_dir, f'depth_{idx}.png'), depth_image)
+
             if color_image is not None:
                 images.append(color_image)
-                if self.save_images and self.save_dir:
-                    cv2.imwrite(os.path.join(self.save_dir, 'color_img', f'color_{idx}.png'), color_image)
+                if self.save_images and color_dir:
+                    cv2.imwrite(os.path.join(color_dir, f'color_{idx}.png'), color_image)
+
             if images:
                 show_img = np.hstack([cv2.resize(img, (640, 480)) for img in images])
                 if self.save_video:
                     if idx == 0:
+                        os.makedirs("output", exist_ok=True)
                         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-                        video_writer = cv2.VideoWriter('output/playback_viewer.mp4', fourcc, 30, (show_img.shape[1], show_img.shape[0]))
+                        video_writer = cv2.VideoWriter(
+                            f'output/{base_name}_playback.mp4',
+                            fourcc, 30, (show_img.shape[1], show_img.shape[0])
+                        )
                     if video_writer:
                         video_writer.write(show_img)
                 self.frame_signal.emit(show_img)
+
             idx += 1
+
         if video_writer:
             video_writer.release()
         pipeline.stop()
