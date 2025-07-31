@@ -64,12 +64,12 @@ class PlaybackThread(QThread):
             if depth_image is not None:
                 images.append(depth_image)
                 if self.save_images and depth_dir:
-                    cv2.imwrite(os.path.join(depth_dir, f'depth_{idx}.png'), depth_image)
+                    cv2.imwrite(os.path.join(depth_dir, f'{base_name}_depth_{idx}.png'), depth_image)
 
             if color_image is not None:
                 images.append(color_image)
                 if self.save_images and color_dir:
-                    cv2.imwrite(os.path.join(color_dir, f'color_{idx}.png'), color_image)
+                    cv2.imwrite(os.path.join(color_dir, f'{base_name}_color_{idx}.png'), color_image)
 
             if images:
                 show_img = np.hstack([cv2.resize(img, (640, 480)) for img in images])
