@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QFileDialog, QMessageBox, QCheckBox, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QFileDialog, QMessageBox, QCheckBox, QSizePolicy, QSpinBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QImage, QPixmap, QFont
 from function.playback_logic import PlaybackThread
@@ -59,6 +59,15 @@ class PlaybackTab(QWidget):
         self.save_checkbox.setStyleSheet("margin-left: 10px; margin-right: 10px;")
         self.save_video_checkbox.setFont(QFont("微软雅黑", 12))
         self.save_video_checkbox.setStyleSheet("margin-left: 10px; margin-right: 10px;")
+
+        self.fps_label = QLabel("帧率：")
+        self.fps_label.setFont(QFont("微软雅黑", 12))
+        self.fps_input = QSpinBox()
+        self.fps_input.setRange(1, 30)
+        self.fps_input.setValue(10)
+        self.fps_input.setFont(QFont("微软雅黑", 12))
+        self.fps_input.setFixedWidth(80)
+
         self.save_dir = None
 
         self.btn_start.setEnabled(False)
@@ -77,6 +86,8 @@ class PlaybackTab(QWidget):
         btn_layout.addWidget(self.btn_stop)
         btn_layout.addWidget(self.save_checkbox)
         btn_layout.addWidget(self.save_video_checkbox)
+        btn_layout.addWidget(self.fps_label)
+        btn_layout.addWidget(self.fps_input)
         btn_layout.addWidget(self.btn_choose_dir)
         btn_layout.addStretch()
 
@@ -133,7 +144,8 @@ class PlaybackTab(QWidget):
             self.bag_path,
             save_images=self.save_checkbox.isChecked(),
             save_dir=self.save_dir,
-            save_video=self.save_video_checkbox.isChecked()
+            save_video=self.save_video_checkbox.isChecked(),
+            fps=self.fps_input.value()
         )
         self.thread.frame_signal.connect(self.update_image)
         self.thread.finished_signal.connect(self.on_finished)
@@ -141,6 +153,7 @@ class PlaybackTab(QWidget):
         self.btn_pause.setEnabled(True)
         self.btn_stop.setEnabled(True)
         self.btn_start.setEnabled(False)
+        self.fps_input.setEnabled(False)
 
     def pause_playback(self):
         if self.thread:
@@ -162,6 +175,7 @@ class PlaybackTab(QWidget):
             self.btn_pause.setEnabled(False)
             self.btn_resume.setEnabled(False)
             self.btn_stop.setEnabled(False)
+            self.fps_input.setEnabled(True)
 
     def update_image(self, img):
         h, w, ch = img.shape
