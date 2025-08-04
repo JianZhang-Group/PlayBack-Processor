@@ -1,4 +1,15 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QFileDialog, QMessageBox, QCheckBox, QSizePolicy, QSpinBox
+from PyQt5.QtWidgets import (
+    QWidget,
+    QLabel,
+    QPushButton,
+    QVBoxLayout,
+    QHBoxLayout,
+    QFileDialog,
+    QMessageBox,
+    QCheckBox,
+    QSizePolicy,
+    QSpinBox,
+)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QImage, QPixmap, QFont
 from function.playback_logic import PlaybackThread
@@ -12,7 +23,9 @@ class PlaybackTab(QWidget):
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setFixedSize(1280, 480)
         self.label.setFont(QFont("微软雅黑", 14))
-        self.label.setStyleSheet("border: 1px solid #aaa; background: #222; color: #fff;")
+        self.label.setStyleSheet(
+            "border: 1px solid #aaa; background: #222; color: #fff;"
+        )
         self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # 样式表
@@ -42,14 +55,27 @@ class PlaybackTab(QWidget):
         """
 
         # 按钮初始化
-        self.btn_open = QPushButton("打开 .bag 文件"); self.btn_open.setStyleSheet(style_open)
-        self.btn_start = QPushButton("开始回放"); self.btn_start.setStyleSheet(style_start)
-        self.btn_pause = QPushButton("暂停"); self.btn_pause.setStyleSheet(style_stop)
-        self.btn_resume = QPushButton("继续"); self.btn_resume.setStyleSheet(style_start)
-        self.btn_stop = QPushButton("停止"); self.btn_stop.setStyleSheet(style_stop)
-        self.btn_choose_dir = QPushButton("选择保存文件夹"); self.btn_choose_dir.setStyleSheet(style_open)
+        self.btn_open = QPushButton("打开 .bag 文件")
+        self.btn_open.setStyleSheet(style_open)
+        self.btn_start = QPushButton("开始回放")
+        self.btn_start.setStyleSheet(style_start)
+        self.btn_pause = QPushButton("暂停")
+        self.btn_pause.setStyleSheet(style_stop)
+        self.btn_resume = QPushButton("继续")
+        self.btn_resume.setStyleSheet(style_start)
+        self.btn_stop = QPushButton("停止")
+        self.btn_stop.setStyleSheet(style_stop)
+        self.btn_choose_dir = QPushButton("选择保存文件夹")
+        self.btn_choose_dir.setStyleSheet(style_open)
 
-        for btn in [self.btn_open, self.btn_start, self.btn_pause, self.btn_resume, self.btn_stop, self.btn_choose_dir]:
+        for btn in [
+            self.btn_open,
+            self.btn_start,
+            self.btn_pause,
+            self.btn_resume,
+            self.btn_stop,
+            self.btn_choose_dir,
+        ]:
             btn.setFont(QFont("微软雅黑", 12))
             btn.setFixedHeight(40)
 
@@ -108,7 +134,9 @@ class PlaybackTab(QWidget):
         self.save_checkbox.stateChanged.connect(self.save_checkbox_changed)
 
     def open_file(self):
-        path, _ = QFileDialog.getOpenFileName(self, "选择 .bag 文件", "", "Bag Files (*.bag)")
+        path, _ = QFileDialog.getOpenFileName(
+            self, "选择 .bag 文件", "", "Bag Files (*.bag)"
+        )
         path_checker = PathChecker(path)
         if path_checker.contains_chinese_or_space():
             QMessageBox.warning(self, "错误", "文件路径中不能包含中文或空格")
@@ -140,13 +168,15 @@ class PlaybackTab(QWidget):
         if self.save_checkbox.isChecked() and not self.save_dir:
             QMessageBox.warning(self, "错误", "请先选择保存文件夹")
             return
-        print(f"开始回放：{self.bag_path}, 保存图片: {self.save_checkbox.isChecked()}, 保存视频: {self.save_video_checkbox.isChecked()}, 帧率: {self.fps_input.value()}")
+        print(
+            f"开始回放：{self.bag_path}, 保存图片: {self.save_checkbox.isChecked()}, 保存视频: {self.save_video_checkbox.isChecked()}, 帧率: {self.fps_input.value()}"
+        )
         self.thread = PlaybackThread(
             self.bag_path,
             save_images=self.save_checkbox.isChecked(),
             save_dir=self.save_dir,
             save_video=self.save_video_checkbox.isChecked(),
-            fps=self.fps_input.value()
+            fps=self.fps_input.value(),
         )
         self.thread.frame_signal.connect(self.update_image)
         self.thread.finished_signal.connect(self.on_finished)

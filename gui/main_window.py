@@ -5,7 +5,6 @@ from gui.export_video_tab import ExportVideoTab
 from gui.command_output_tab import CommandOutputTab
 
 
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()

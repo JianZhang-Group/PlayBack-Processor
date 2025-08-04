@@ -5,11 +5,14 @@ from pyorbbecsdk import *
 from function.utils import frame_to_bgr_image
 import numpy as np
 
+
 class PlaybackThread(QThread):
     frame_signal = pyqtSignal(object)
     finished_signal = pyqtSignal()
 
-    def __init__(self, bag_path, save_images=False, save_dir=None, save_video=False, fps=10):
+    def __init__(
+        self, bag_path, save_images=False, save_dir=None, save_video=False, fps=10
+    ):
         super().__init__()
         self.bag_path = bag_path
         self.running = True
@@ -17,7 +20,7 @@ class PlaybackThread(QThread):
         self.save_images = save_images
         self.save_dir = save_dir
         self.save_video = save_video
-        self.fps = fps   # 新增帧率参数
+        self.fps = fps  # 新增帧率参数
 
     def run(self):
         pipeline = Pipeline(self.bag_path)
@@ -36,8 +39,8 @@ class PlaybackThread(QThread):
         color_dir, depth_dir = None, None
         if self.save_images and self.save_dir:
             root_save_dir = os.path.join(self.save_dir, base_name)
-            depth_dir = os.path.join(root_save_dir, 'depth')
-            color_dir = os.path.join(root_save_dir, 'color')
+            depth_dir = os.path.join(root_save_dir, "depth")
+            color_dir = os.path.join(root_save_dir, "color")
             os.makedirs(depth_dir, exist_ok=True)
             os.makedirs(color_dir, exist_ok=True)
 
@@ -58,7 +61,9 @@ class PlaybackThread(QThread):
             depth_data = np.frombuffer(depth_frame.get_data(), dtype=np.uint16)
             depth_data = depth_data.reshape((height, width))
             depth_data = depth_data.astype(float) * scale
-            depth_image = cv2.normalize(depth_data, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+            depth_image = cv2.normalize(
+                depth_data, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U
+            )
             depth_image = cv2.applyColorMap(depth_image, cv2.COLORMAP_JET)
 
             color_image = frame_to_bgr_image(frames.get_color_frame())
@@ -67,24 +72,34 @@ class PlaybackThread(QThread):
             if depth_image is not None:
                 images.append(depth_image)
                 if self.save_images and depth_dir:
-                    cv2.imwrite(os.path.join(depth_dir, f'{base_name}_depth_{idx}.png'), depth_image)
+                    cv2.imwrite(
+                        os.path.join(depth_dir, f"{base_name}_depth_{idx}.png"),
+                        depth_image,
+                    )
 
             if color_image is not None:
                 images.append(color_image)
                 if self.save_images and color_dir:
-                    cv2.imwrite(os.path.join(color_dir, f'{base_name}_color_{idx}.png'), color_image)
+                    cv2.imwrite(
+                        os.path.join(color_dir, f"{base_name}_color_{idx}.png"),
+                        color_image,
+                    )
 
             if images:
                 show_img = np.hstack([cv2.resize(img, (640, 480)) for img in images])
                 if self.save_video:
                     if idx == 0:
                         os.makedirs(root_save_dir, exist_ok=True)  # 确保 bag 文件夹存在
-                        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+                        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
                         video_writer = cv2.VideoWriter(
-                            f'{root_save_dir}/{base_name}_playback.mp4',
-                            fourcc, self.fps, (show_img.shape[1], show_img.shape[0])
+                            f"{root_save_dir}/{base_name}_playback.mp4",
+                            fourcc,
+                            self.fps,
+                            (show_img.shape[1], show_img.shape[0]),
                         )
-                        print(f"视频保存路径: {root_save_dir}/{base_name}_playback.mp4;帧率： {self.fps}")
+                        print(
+                            f"视频保存路径: {root_save_dir}/{base_name}_playback.mp4;帧率： {self.fps}"
+                        )
                     if video_writer:
                         video_writer.write(show_img)
                 self.frame_signal.emit(show_img)

@@ -1,4 +1,15 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QFileDialog, QMessageBox, QLineEdit, QSpinBox, QProgressBar
+from PyQt5.QtWidgets import (
+    QWidget,
+    QLabel,
+    QPushButton,
+    QVBoxLayout,
+    QHBoxLayout,
+    QFileDialog,
+    QMessageBox,
+    QLineEdit,
+    QSpinBox,
+    QProgressBar,
+)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from function.export_logic import ExportVideoThread
@@ -33,7 +44,8 @@ class ExportVideoTab(QWidget):
         self.label_info.setAlignment(Qt.AlignCenter)
         self.label_info.setStyleSheet("margin-bottom: 10px;")
 
-        self.btn_choose_img = QPushButton("选择图片文件夹"); self.btn_choose_img.setStyleSheet(style_select)
+        self.btn_choose_img = QPushButton("选择图片文件夹")
+        self.btn_choose_img.setStyleSheet(style_select)
         self.btn_choose_img.setFont(QFont("微软雅黑", 12))
         self.btn_choose_img.setFixedHeight(36)
         self.btn_choose_img.clicked.connect(self.choose_img_dir)
@@ -52,12 +64,14 @@ class ExportVideoTab(QWidget):
         self.out_name_input.setFont(QFont("微软雅黑", 12))
         self.out_name_input.setFixedWidth(200)
 
-        self.btn_choose_out = QPushButton("选择保存文件夹"); self.btn_choose_out.setStyleSheet(style_select)
+        self.btn_choose_out = QPushButton("选择保存文件夹")
+        self.btn_choose_out.setStyleSheet(style_select)
         self.btn_choose_out.setFont(QFont("微软雅黑", 12))
         self.btn_choose_out.setFixedHeight(36)
         self.btn_choose_out.clicked.connect(self.choose_out_dir)
 
-        self.btn_export = QPushButton("导出视频"); self.btn_export.setStyleSheet(style_export)
+        self.btn_export = QPushButton("导出视频")
+        self.btn_export.setStyleSheet(style_export)
         self.btn_export.setFont(QFont("微软雅黑", 12))
         self.btn_export.setFixedHeight(40)
         self.btn_export.clicked.connect(self.export_video)
